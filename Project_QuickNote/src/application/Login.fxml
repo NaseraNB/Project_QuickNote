@@ -14,7 +14,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="520.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="520.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.ViewsLoginController">
    <right>
       <AnchorPane prefHeight="400.0" prefWidth="196.0" style="-fx-background-color: #fff;" BorderPane.alignment="CENTER">
          <children>
@@ -40,10 +40,10 @@
                </image>
             </ImageView>
             <Label layoutX="21.0" layoutY="149.0" text="Username" />
-            <TextField fx:id="usernameFx" layoutX="111.0" layoutY="144.0" onKeyTyped="#eventKey" prefHeight="26.0" prefWidth="173.0" promptText="Username" />
+            <TextField fx:id="usernameFx" layoutX="111.0" layoutY="144.0" prefHeight="26.0" prefWidth="173.0" promptText="Username" />
             <Label layoutX="24.0" layoutY="196.0" text="Password" />
-            <PasswordField fx:id="passwordFx" layoutX="111.0" layoutY="191.0" onKeyTyped="#eventKey" prefHeight="26.0" prefWidth="173.0" promptText="Password" />
-            <Button fx:id="loginButton" layoutX="60.0" layoutY="283.0" mnemonicParsing="false" onAction="#eventAction" prefHeight="32.0" prefWidth="189.0" style="-fx-background-color: black;" text="Login" textAlignment="CENTER" textFill="WHITE">
+            <PasswordField fx:id="passwordFx" layoutX="111.0" layoutY="191.0" prefHeight="26.0" prefWidth="173.0" promptText="Password" />
+            <Button fx:id="loginButton" layoutX="60.0" layoutY="283.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="189.0" style="-fx-background-color: black;" text="Login" textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font name="DejaVu Sans Mono Bold" size="16.0" />
                </font>
