@@ -45,8 +45,8 @@ public class ViewsLoginController implements Initializable{
 	@FXML 
 	private ImageView ImageIcon;
 	
-	public void loginMessageOnAction(ActionEvent event) {
-		loginMessage.setText("You try to login");
+	public void loginButtonOnActivion(ActionEvent event) {
+		loginMessage.setText("The login is not valid");
 	}
 	
 	@FXML
