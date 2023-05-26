@@ -18,7 +18,7 @@
    <right>
       <AnchorPane prefHeight="400.0" prefWidth="196.0" style="-fx-background-color: #fff;" BorderPane.alignment="CENTER">
          <children>
-            <ImageView fitHeight="156.0" fitWidth="176.0" layoutX="15.0" layoutY="72.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="imageLogo" fitHeight="156.0" fitWidth="176.0" layoutX="15.0" layoutY="72.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../../../../../Imágenes/Capturas%20de%20pantalla/Captura%20desde%202023-05-26%2006-21-34.png" />
                </image>
@@ -34,7 +34,7 @@
    <left>
       <AnchorPane prefHeight="400.0" prefWidth="309.0" style="-fx-background-color: #FFCF59;" BorderPane.alignment="CENTER">
          <children>
-            <ImageView fitHeight="61.0" fitWidth="70.0" layoutX="123.0" layoutY="43.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="ImageIcon" fitHeight="61.0" fitWidth="70.0" layoutX="123.0" layoutY="43.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../../../../../Imágenes/Capturas%20de%20pantalla/Captura%20desde%202023-05-26%2006-35-02.png" />
                </image>
@@ -73,7 +73,7 @@
                   </RadialGradient>
                </textFill>
             </Label>
-            <Label alignment="CENTER" layoutX="56.0" layoutY="257.0" text="Invalid Login. Please try again" textFill="RED" />
+            <Label fx:id="loginMessage" alignment="CENTER" layoutX="56.0" layoutY="257.0" textFill="RED" />
          </children>
       </AnchorPane>
    </left>
