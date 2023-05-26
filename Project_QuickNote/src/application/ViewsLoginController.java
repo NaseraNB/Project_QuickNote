@@ -46,7 +46,12 @@ public class ViewsLoginController implements Initializable{
 	private ImageView ImageIcon;
 	
 	public void loginButtonOnActivion(ActionEvent event) {
-		loginMessage.setText("The login is not valid");
+		
+		if (usernameFx.getText().isBlank() == false && passwordFx.getText().isBlank() == false) {
+			validateLogin();
+		} else {
+			loginMessage.setText("Plase enter username and password");
+		}
 	}
 	
 	@FXML
@@ -67,4 +72,7 @@ public class ViewsLoginController implements Initializable{
 		
 	}
 	
+	public void validateLogin() {
+		
+	}
 }
