@@ -9,17 +9,15 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-
 import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
-
 import javafx.event.ActionEvent;
 
 
 public class ViewsLoginController implements Initializable{
 
-	// Variables que vamos a utilizar que an sido inicializadas en Login.FXML.
+	// Variables que utilitzarem que estan inicialitzades a Login.FXML.
 	@FXML
 	private TextField usernameFx;
 	
