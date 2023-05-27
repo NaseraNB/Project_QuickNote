@@ -77,10 +77,32 @@ public class RegisterController implements Initializable{
 				&& emailSignin.getText().isEmpty() && passwordSignin.getText().isEmpty()
 				&& confirmPasswordSignin.getText().isEmpty()) {
 			
-			signinMessage.setText("Please enter your information in the fields.");
+			signinMessage.setText("Please enter your information in the fields."); // Mensaje de error que aparecerá.
 			
 		} else {
 			
+			// Comprovamos lo mismo que el anterio pero por separado, cada uno tendra mensaje diferentes.
+			
+			// Nombre de la persona
+			if (firstnameSignin.getText().isEmpty()) {
+				signinMessage.setText("Please enter your first name."); 
+			
+			// Nombre de usuario
+			} else if (usernameSignin.getText().isEmpty()) {
+				signinMessage.setText("Please enter a username");
+				
+			// Gmail	
+			} else if (emailSignin.getText().isEmpty()) {
+				signinMessage.setText("Please enter your email address.");
+				
+			// Contraseña	
+			} else if (passwordSignin.getText().isEmpty()) {
+				signinMessage.setText("Please enter a password");
+			
+			// Confirmar la contraseña
+			} else if (confirmPasswordSignin.getText().isEmpty()) {
+				signinMessage.setText("Please confirm your password.");
+			}
 		}
 		
 	
