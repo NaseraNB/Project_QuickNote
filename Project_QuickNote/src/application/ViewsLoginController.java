@@ -2,7 +2,10 @@ package application;
 
 // Paquetes importados
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -10,6 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+
 import java.io.File;
 import java.net.URL;
 import java.sql.Connection;
@@ -46,6 +50,13 @@ public class ViewsLoginController implements Initializable{
 	
 	@FXML 
 	private ImageView ImageIcon;
+	
+	
+	// Metodo que cuando el usuario pulse en el boton de sign in el usuario podra ver la vista del registro para poder registarse.
+	public void signInButtonOnActivion(ActionEvent event) {
+		createAccountForm();
+	}
+	
 	
 	public void loginButtonOnActivion(ActionEvent event) {
 		
@@ -132,8 +143,26 @@ public class ViewsLoginController implements Initializable{
 				e2.printStackTrace();
 			}
 		}
+	}
+	
+	
+	// Metodo que llama la vista de registro
+	public void createAccountForm() {
+		
+		try {
+			 Parent root = FXMLLoader.load(getClass().getResource("Register.fxml"));
+			 
+			 Stage registerStage = new Stage();
+			 
+			 //registerStage.initStyle(StageStyle.UNDECORATED);
+			 registerStage.setScene(new Scene(root, 520, 580));
+			 registerStage.show();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 	}
+	
 }
 
 
