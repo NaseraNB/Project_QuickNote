@@ -19,11 +19,33 @@ import java.util.ResourceBundle;
 
 public class RegisterController implements Initializable{
 
+	// Variables y botones.
 	@FXML
 	private ImageView iconSignin;
 	
 	@FXML
 	private Button closeButtonS; 
+	
+	@FXML
+	private Label correctMessageSignIn;
+	
+	@FXML
+	private Label signinMessage;
+	
+	@FXML
+	private TextField firstnameSignin;
+	
+	@FXML 
+	private TextField usernameSignin;
+	
+	@FXML
+	private TextField emailSignin;
+	
+	@FXML
+	private PasswordField passwordSignin;
+	
+	@FXML
+	private PasswordField confirmPasswordSignin;
 	
 	
 	@Override
@@ -41,6 +63,35 @@ public class RegisterController implements Initializable{
 		// Cerramos el registro, si el usuario pulsa el boton de close le llevará  a la vista del login.
 		Stage stage = (Stage) closeButtonS.getScene().getWindow();
 		stage.close();
+	}
+	
+	public void registerButtonOnAction(ActionEvent event) {
+		resgisterUser();
+	}
+	
+	// Metodo que contendra todo los tipos de error que puden surgir al registrarse.
+	public void resgisterUser() {
+		
+		// Comprovamos si todos los campos están vaciós, si es hacin se mostrar un mensaje de error.
+		if (firstnameSignin.getText().isEmpty() && usernameSignin.getText().isEmpty()
+				&& emailSignin.getText().isEmpty() && passwordSignin.getText().isEmpty()
+				&& confirmPasswordSignin.getText().isEmpty()) {
+			
+			signinMessage.setText("Please enter your information in the fields.");
+			
+		} else {
+			
+		}
+		
+	
+		/*
+		// firstnameSignin.getText().isEmpty() --> Si la entrada del usuario esta vacio.
+		if (firstnameSignin.getText().isEmpty() || !firstnameSignin.getText().matches("[a-zA-Z]+")) {
+			signinMessage.setText("Invalid name. Please enter only letters.");
+		} else {
+			correctMessageSignIn.setText("User has been registered successfully!");
+		}*/
+		
 	}
 
 }
