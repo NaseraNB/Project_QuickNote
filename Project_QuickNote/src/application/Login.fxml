@@ -20,10 +20,10 @@
          <children>
             <ImageView fx:id="imageLogo" fitHeight="156.0" fitWidth="176.0" layoutX="15.0" layoutY="72.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../../../../Imágenes/Capturas%20de%20pantalla/Captura%20desde%202023-05-26%2006-21-34.png" />
+                  <Image url="@../../../../../Imágenes/Capturas%20de%20pantalla/Image/Captura%20desde%202023-05-26%2006-21-34.png" />
                </image>
             </ImageView>
-            <Button fx:id="registerButton" layoutX="34.0" layoutY="237.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="135.0" style="-fx-background-color: black;" text="Register" textAlignment="CENTER" textFill="WHITE">
+            <Button fx:id="registerButton" layoutX="34.0" layoutY="237.0" mnemonicParsing="false" onAction="#signInButtonOnActivion" prefHeight="32.0" prefWidth="135.0" style="-fx-background-color: black;" text="Sign in" textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font name="DejaVu Sans Mono Bold" size="16.0" />
                </font>
@@ -36,7 +36,7 @@
          <children>
             <ImageView fx:id="ImageIcon" fitHeight="61.0" fitWidth="70.0" layoutX="123.0" layoutY="43.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../../../../Imágenes/Capturas%20de%20pantalla/Captura%20desde%202023-05-26%2006-35-02.png" />
+                  <Image url="@../../../../../Imágenes/Capturas%20de%20pantalla/Image/Captura%20desde%202023-05-26%2006-35-02.png" />
                </image>
             </ImageView>
             <Label layoutX="21.0" layoutY="149.0" text="Username" />
