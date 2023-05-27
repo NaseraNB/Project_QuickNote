@@ -73,7 +73,7 @@
                   </RadialGradient>
                </textFill>
             </Label>
-            <Label fx:id="loginMessage" alignment="CENTER" layoutX="56.0" layoutY="257.0" prefHeight="16.0" prefWidth="200.0" textAlignment="CENTER" textFill="RED" />
+            <Label fx:id="loginMessage" alignment="CENTER" layoutX="11.0" layoutY="257.0" prefHeight="16.0" prefWidth="286.0" textAlignment="CENTER" textFill="RED" />
          </children>
       </AnchorPane>
    </left>

@@ -47,7 +47,7 @@ public class ViewsLoginController implements Initializable{
 		if (usernameFx.getText().isBlank() == false && passwordFx.getText().isBlank() == false) {
 			validateLogin();
 		} else {
-			loginMessage.setText("Plase enter username and password");
+			loginMessage.setText("Please enter username and password");
 		}
 	}
 	
