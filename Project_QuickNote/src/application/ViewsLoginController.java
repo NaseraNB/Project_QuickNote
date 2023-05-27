@@ -13,15 +13,14 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import javafx.event.ActionEvent;
 
 import java.io.File;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.util.ResourceBundle;
-
 import java.sql.Statement;
-import javafx.event.ActionEvent;
 
 
 public class ViewsLoginController implements Initializable{
