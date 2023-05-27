@@ -13,6 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.event.ActionEvent;
 
 import java.io.File;
@@ -153,7 +154,7 @@ public class ViewsLoginController implements Initializable{
 			 
 			 Stage registerStage = new Stage();
 			 
-			 //registerStage.initStyle(StageStyle.UNDECORATED);
+			 registerStage.initStyle(StageStyle.UNDECORATED);
 			 registerStage.setScene(new Scene(root, 520, 580));
 			 registerStage.show();
 		} catch (Exception e) {
