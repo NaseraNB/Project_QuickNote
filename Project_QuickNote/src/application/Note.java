@@ -12,7 +12,7 @@ public class Note {
 	 * Variable to save the note date.
 	 */
 	private LocalDate noteDate;
-	
+
 	/**
 	 * Variable to save the note title.
 	 */
@@ -33,6 +33,15 @@ public class Note {
 		this.title = title;
 		this.body = body;
 		noteDate=LocalDate.now();
+	}
+	
+	
+	public LocalDate getNoteDate() {
+		return noteDate;
+	}
+
+	public void setNoteDate(LocalDate noteDate) {
+		this.noteDate = noteDate;
 	}
 	
 	/**
