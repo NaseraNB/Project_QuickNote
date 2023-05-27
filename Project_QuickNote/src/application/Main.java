@@ -12,7 +12,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         // Cargar el archivo fxml
         Parent root = FXMLLoader.load(getClass().getResource("Login.fxml"));
-        //primaryStage.initStyle(StageStyle.UNDECORATED);
+        primaryStage.initStyle(StageStyle.UNDECORATED);
         primaryStage.setScene(new Scene(root, 520, 400));
         primaryStage.show();
     }
