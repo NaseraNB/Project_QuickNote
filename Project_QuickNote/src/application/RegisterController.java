@@ -102,11 +102,53 @@ public class RegisterController implements Initializable{
 			// Confirmar la contraseña
 			} else if (confirmPasswordSignin.getText().isEmpty()) {
 				signinMessage.setText("Please confirm your password.");
+				
+			/* Ahora lo que comprobaremos es si lo que introduce el usuario en los campos son correctos. sino saltara un mensaje de error.*/	
+				
+			// Nombre de la persona solamente tiene que contener letras sino saldra un mensaje de error.
+			} else if (!firstnameSignin.getText().matches("[a-zA-Z]+")) {
+				signinMessage.setText("Invalid name. Please enter only letters."); 
+			
+			
+			// Tipos de errores en el gmail.
+			
+			// Tiene que contener un @.
+			} else if (!emailSignin.getText().matches(".*@.*")) {
+				signinMessage.setText("Invalid email. An email must contain @.");
+			
+			// Tiene que contener un ".".
+			} else if (!emailSignin.getText().matches(".*\\..*")) { 
+				signinMessage.setText("Invalid email. An email must contain a period '.' for the domain.");
+			
+			// No puede contener más de un @.
+			} else if (emailSignin.getText().split("@").length > 2) {
+				signinMessage.setText("Invalid email. An email can only contain one @");
+			
+			// Después del punto del dominio al menos tiene que escribir 2 caracteres.
+			} else if (!emailSignin.getText().matches(".+@.+\\..{2,63}")) {
+				signinMessage.setText("Invalid email. The domain must have a length between 2 and 63.");
+				
+				
+			// Tipos de errores en la contraseña.
+				
+			} else {
+				signinMessage.setText("Correct");
 			}
 		}
 		
 	
 		/*
+		 * else {
+				signinMessage.setText("");
+				correctMessageSignIn.setText("User registration successfully!");
+			}
+			
+				// Tipos de errores en la contraseña.
+				
+			// La contraseña tiene que tener 8 caracteres
+			} else if (passwordSignin < 8) {
+				signinMessage.setText("Invalid password. Must be at least 8 characters");
+		 * 
 		// firstnameSignin.getText().isEmpty() --> Si la entrada del usuario esta vacio.
 		if (firstnameSignin.getText().isEmpty() || !firstnameSignin.getText().matches("[a-zA-Z]+")) {
 			signinMessage.setText("Invalid name. Please enter only letters.");
