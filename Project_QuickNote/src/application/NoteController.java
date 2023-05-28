@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import model.Note;
 
 import java.sql.*;
@@ -29,7 +30,7 @@ public class NoteController implements Initializable{
 		private ScrollPane scrollNote;
 		
 		@FXML
-		private TextArea titleNote;
+		private TextField titleNote;
 		
 		@FXML
 		private TextArea bodyText;
@@ -41,6 +42,8 @@ public class NoteController implements Initializable{
 		private Button saveLocalB;
 		
 		private Note note;
+		
+		private NotePadController NotePadController;
 
 		/**
 		 * 
@@ -96,6 +99,59 @@ public class NoteController implements Initializable{
 			//TODO 
 		}
 		
+		public Menu getDeleteNote() {
+			return deleteNote;
+		}
+
+		public void setDeleteNote(Menu deleteNote) {
+			this.deleteNote = deleteNote;
+		}
+
+		public Menu getExitNote() {
+			return exitNote;
+		}
+
+		public void setExitNote(Menu exitNote) {
+			this.exitNote = exitNote;
+		}
+
+		public ScrollPane getScrollNote() {
+			return scrollNote;
+		}
+
+		public void setScrollNote(ScrollPane scrollNote) {
+			this.scrollNote = scrollNote;
+		}
+
+		public TextField getTitleNote() {
+			return titleNote;
+		}
+
+		public void setTitleNote(TextField titleNote) {
+			this.titleNote = titleNote;
+		}
+
+		public TextArea getBodyText() {
+			return bodyText;
+		}
+
+		public void setBodyText(TextArea bodyText) {
+			this.bodyText = bodyText;
+		}
+
+
+		public Button getSaveLocalB() {
+			return saveLocalB;
+		}
+
+		public void setSaveLocalB(Button saveLocalB) {
+			this.saveLocalB = saveLocalB;
+		}
+
+		public void setNote(Note note) {
+			this.note = note;
+		}
+
 		/**
 		 * Method to save the note online.
 		 * @param event - on click.
@@ -148,4 +204,13 @@ public class NoteController implements Initializable{
 		public Note getNote() {
 	        return note;
 	    }
+
+		public NotePadController getNotePadController() {
+			return NotePadController;
+		}
+
+		public void setNotePadController(NotePadController notePadController) {
+			NotePadController = notePadController;
+		}
+		
 }

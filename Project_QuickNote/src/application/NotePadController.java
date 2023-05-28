@@ -1,7 +1,5 @@
 package application;
 
-import java.sql.*;
-import javax.sql.*;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,10 +17,12 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ResourceBundle;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -71,39 +71,49 @@ public class NotePadController implements Initializable{
 	 */
 	private ObservableList<String> arrayListTitles = FXCollections.observableArrayList();;
 	
-	private int longinUserId;
+	private int longinUserId = 0;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		notes = FXCollections.observableArrayList();
 		
-		notes.add(new Note("Nota","Soy una nota."));
-		notes.add(new Note("Nota2","Soy una nota 2."));
-		notes.add(new Note("Nota 3","Soy una nota 3."));
-		
-		//Connection to data base.	
-		/*try {
-			Connection notesConnection = DriverManager.getConnection("jdbc:mysql://sql8.freesqldatabase.com:3306/sql8620870","sql8620870","Br7vTpCslf");
-			Statement newS = notesConnection.createStatement();
-			
-			//TODO que solo salgan las notas que queremos, con un WHERE idUser = a user logeado.
-			ResultSet result = newS.executeQuery("SELECT title FROM Note");
-			
-			//Fit the array with the SELECT result.
-			while(result.next()) {
-				notes.add(result.toString());
-			}
-		} catch (SQLException e) {
+		// Obtener las notas de usuario desde la base de datos
+		try {
+			fetchUserNotes();
+		} catch (IOException e) {
 			e.printStackTrace();
-		}*/
-		//Get the notes title.
-		for(Note note : notes) {
-			arrayListTitles.add(note.getTitle());
 		}
-		notesListView.setItems(arrayListTitles);
 		
+		for (Note note : notes) {
+			arrayListTitles.add(note.getTitle());
+		} 
+		
+		notesListView.setItems(arrayListTitles);
 		notesListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+		
+	
 	}
+	
+	// Metodo para obtener las notas creadas del usuario desde la base de datos.
+	private void fetchUserNotes() throws IOException{
+		try {
+			
+			Connection connectionDB = DriverManager.getConnection("jdbc:mysql://sql8.freesqldatabase.com:3306/sql8620870","sql8620870","Br7vTpCslf");
+			Statement noteStatement = connectionDB.createStatement();
+			
+			ResultSet resultSet = noteStatement.executeQuery("SELECT title, body FROM Note WHERE IdUser = " + longinUserId);
+			
+			while (resultSet.next()) {
+				String title = resultSet.getString("title");
+				String body = resultSet.getString("body");
+				notes.add(new Note(title, body));
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	
 	/**
 	 * Method to open an external note.
@@ -129,7 +139,7 @@ public class NotePadController implements Initializable{
 	 */
 	@FXML
 	private void newNoteAction(ActionEvent event) {
-		openNoteWindows();
+		openNoteWindows(null);
 	}
 	
 	/**
@@ -138,30 +148,31 @@ public class NotePadController implements Initializable{
 	 */
 	@FXML
 	private void editNoteAction(ActionEvent event) {
-		openNoteWindows();
+		int selectedIndex = notesListView.getSelectionModel().getSelectedIndex();
+		
+		if (selectedIndex >= 0) {
+			Note selectedNote = notes.get(selectedIndex);
+			openNoteWindows(selectedNote);
+		}
 	}
 	
 	/**
 	 * Method to open the note windows.
 	 */
-	public void openNoteWindows() {
+	public void openNoteWindows(Note note) {
 		try {
 			FXMLLoader loader = new FXMLLoader();
-			
 			loader.setLocation(Main.class.getResource("/view/NoteView.fxml"));
-			
 			Parent windows = loader.load();
-			
+			NoteController noteController = loader.getController();
+			noteController.setNote(note);
+			noteController.setNotePadController(this);
 			Scene scene = new Scene(windows);
-			
 			Stage stage = new Stage();
-			
 			stage.setScene(scene);
-			
 			stage.show();
 			
 		} catch (IOException e) {
-			// TODO Generar de forma gráfica el error.
 			e.printStackTrace();
 		}
 	}
@@ -172,7 +183,18 @@ public class NotePadController implements Initializable{
 	 * @param event
 	 */
 	public void deleteNote(ActionEvent event) {
-		//TODO 
+		int selectedIndex = notesListView.getSelectionModel().getSelectedIndex();
+		
+		if(selectedIndex >= 0) {
+			notes.remove(selectedIndex);
+			arrayListTitles.remove(selectedIndex);
+			
+			
+			// Eliminiamos la nota de la base de datos.
+			Note selectedNote = notes.get(selectedIndex);
+			openNoteWindows(selectedNote);
+			
+		}
 	}
 	
 	
@@ -188,6 +210,74 @@ public class NotePadController implements Initializable{
 	}
 	
 	
+	public void saveNote(Note note) {
+		
+		if (note != null) {
+			if(notes.contains(note)) {
+				// Actualizamos la nota existente en la base de datos.
+				updateNoteInDB(note);
+			} else {
+				notes.add(note);
+				
+				arrayListTitles.add(note.getTitle());
+				
+				// Insertamos la nueva nota en la base de datos
+				insertNoteDB(note);
+			}
+		}
+	}
+	
+	
+	private void insertNoteDB(Note note) {
+		
+		try {
+			
+			Connection connectionDB = DriverManager.getConnection("jdbc:mysql://sql8.freesqldatabase.com:3306/sql8620870","sql8620870","Br7vTpCslf");
+			Statement statement = connectionDB.createStatement();
+			String query = "INSERT INTO Note (title, body, IdUser) VALUES ('" + note.getTitle() + "', '" + note.getBody() + "', " + longinUserId + ")";
+			statement.executeUpdate(query);
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
+	private void updateNoteInDB(Note note) {
+		
+		try {	
+			Connection connectionDB = DriverManager.getConnection("jdbc:mysql://sql8.freesqldatabase.com:3306/sql8620870","sql8620870","Br7vTpCslf");
+			Statement statement = connectionDB.createStatement();
+			String query = "UPDATE Note SET title = '" + note.getTitle() + "', body = '" + note.getBody() + "' WHERE IdUser = " + longinUserId + " AND title = '" + note.getTitle() + "'";
+			statement.executeUpdate(query);
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
+	
+	private void deleteNoteFromDatabase(Note note) {
+		int selectedIndex = notesListView.getSelectionModel().getSelectedIndex();
+
+		if (selectedIndex >= 0) {
+			Note selectedNote = notes.get(selectedIndex);
+			
+			try {	
+				Connection connectionDB = DriverManager.getConnection("jdbc:mysql://sql8.freesqldatabase.com:3306/sql8620870","sql8620870","Br7vTpCslf");
+				Statement statement = connectionDB.createStatement();
+				String query = "DELETE FROM Note WHERE IdUser = " + longinUserId + " AND title = '" + selectedNote.getTitle() + "'";
+				statement.executeUpdate(query);
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 	/**
 	 * Method to scroll at notes windows.
 	 * @param event - 
