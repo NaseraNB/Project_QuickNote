@@ -59,18 +59,14 @@ public class RegisterController implements Initializable{
 	
 	@FXML
 	public void cancelButtonOnAction(ActionEvent event) {
-		
+	
 		// Cerramos el registro, si el usuario pulsa el boton de close le llevará  a la vista del login.
 		Stage stage = (Stage) closeButtonS.getScene().getWindow();
 		stage.close();
 	}
 	
-	public void registerButtonOnAction(ActionEvent event) {
-		resgisterUser();
-	}
-	
 	// Metodo que contendra todo los tipos de error que puden surgir al registrarse.
-	public void resgisterUser() {
+	public void registerButtonOnAction(ActionEvent event) {
 		
 		// Comprovamos si todos los campos están vaciós, si es hacin se mostrar un mensaje de error.
 		if (firstnameSignin.getText().isEmpty() && usernameSignin.getText().isEmpty()
@@ -179,9 +175,53 @@ public class RegisterController implements Initializable{
 				
 			} else {
 				// Sino sera correcto.
-				correctMessageSignIn.setText("User has been registered successfully!");
 				signinMessage.setText(" ");
+				resgisterUser();
 			}
+		}
+
+	}
+	
+	// Metodo resgisterUser se conectarar con la base de datos para añadir el registro.
+	public void resgisterUser() {
+		
+		// Careamos una instancia de la clase DatabaseConnection.
+		DatabaseConnection connectNow = new DatabaseConnection();
+				
+		// Obtenermos una conexión a la base de datos.
+		Connection connectDB = connectNow.getConnection();
+		
+		// Inizializamos la entrada del usuario a esta variables.
+		String name = firstnameSignin.getText();
+		String username = usernameSignin.getText();
+		String password = passwordSignin.getText();
+		String email = emailSignin.getText();
+		
+		// Añadimos los datos a la base de datos
+		String addRegister = "INSERT INTO User(name, username, password, email) VALUES ('" + name + "','" + username
+				 + "','" + password + "','" + email + "')"; 
+		
+		try {
+			
+			// Hacemos la consexion para añadir el nuevo registro a usuario.
+			Statement statement = connectDB.createStatement();
+			statement.executeUpdate(addRegister);
+			correctMessageSignIn.setText("User has been registered successfully!");
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			e.getCause();
 		}
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
