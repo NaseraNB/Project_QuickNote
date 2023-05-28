@@ -2,7 +2,10 @@ package application;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -10,6 +13,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.io.File;
 import java.net.URL;
@@ -47,6 +51,7 @@ public class RegisterController implements Initializable{
 	@FXML
 	private PasswordField confirmPasswordSignin;
 	
+	private int longinUserId;
 	
 	@Override
 	public void initialize(URL url, ResourceBundle arg1) {
@@ -57,6 +62,7 @@ public class RegisterController implements Initializable{
 		iconSignin.setImage(iconSignInImage);		
 	}
 	
+
 	@FXML
 	public void cancelButtonOnAction(ActionEvent event) {
 	
@@ -208,10 +214,34 @@ public class RegisterController implements Initializable{
 			statement.executeUpdate(addRegister);
 			correctMessageSignIn.setText("User has been registered successfully!");
 			
+			// cerramos la ventana de registro
+			Stage stage = (Stage) closeButtonS.getScene().getWindow();
+			stage.close();
+			
+			// Mostramos la ventana de login.
+			FXMLLoader loginLoader = new FXMLLoader(getClass().getResource("/view/Login.fxml"));
+			Parent loginRoot = loginLoader.load();
+			ViewsLoginController loginController = loginLoader.getController();
+			
+			loginController.setRegisteredCredentials(username, password);
+			
+			// Muestra la ventana de inicio de sesión
+			Stage loginStage = new Stage();
+			loginStage.setScene(new Scene(loginRoot));
+			loginStage.show();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			e.getCause();
 		}
+	}
+	
+	public int getLonginUserId() {
+		return longinUserId;
+	}
+
+	public void setLonginUserId(int longinUserId) {
+		this.longinUserId = longinUserId;
 	}
 }
 

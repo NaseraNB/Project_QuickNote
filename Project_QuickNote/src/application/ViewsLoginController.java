@@ -17,6 +17,7 @@ import javafx.stage.StageStyle;
 import javafx.event.ActionEvent;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -51,6 +52,11 @@ public class ViewsLoginController implements Initializable{
 	@FXML 
 	private ImageView ImageIcon;
 	
+	private int longinUserId;
+	
+	private String registeredUsername;
+	private String registeredPassword;;
+	
 	
 	// Metodo que cuando el usuario pulse en el boton de sign in el usuario podra ver la vista del registro para poder registarse.
 	public void signInButtonOnActivion(ActionEvent event) {
@@ -58,13 +64,45 @@ public class ViewsLoginController implements Initializable{
 	}
 	
 	
-	public void loginButtonOnActivion(ActionEvent event) {
+	public void loginButtonOnActivion(ActionEvent event) throws IOException {
+		
+		String enterdUsername = usernameFx.getText();
+		String enterdPassword = passwordFx.getText();
 		
 		if (usernameFx.getText().isBlank() == false && passwordFx.getText().isBlank() == false) {
 			validateLogin();
 		} else {
 			loginMessage.setText("Please enter username and password");
 		}
+		
+		
+		try {
+		
+			// Miramos si los datos del usuario son los mismo que el de registro
+			if (enterdUsername.equals(registeredUsername) && enterdPassword.equals(registeredPassword)) {
+				// cerramos la ventana de inicio de sescion
+				Stage stage = (Stage) loginButton.getScene().getWindow();
+				stage.close();
+				
+				// Mostramos la ventana de la lista de ntas
+				FXMLLoader notesPadLoader = new FXMLLoader(getClass().getResource("/view/NotePadView.fxml"));
+				Parent notesPadRoot = notesPadLoader.load();
+				NotePadController notesPadController = notesPadLoader.getController();
+				
+				// Pasamos los datos necesario para poder saber que lista tenemos que ver
+				notesPadController.setLonginUserId(longinUserId);
+				
+				// Mostramos la ventana de la lista de notas
+				Stage notesPadStage = new Stage();
+				notesPadStage.setScene(new Scene(notesPadRoot));
+				notesPadStage.show();
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			e.getCause();
+		}
+		
 	}
 	
 	@FXML
@@ -100,9 +138,9 @@ public class ViewsLoginController implements Initializable{
 		Connection connectDB = connectNow.getConnection();
 		
 		// Esta consulta sql nos permite verificar el inicio de sesión utilizando el nombre del usuario y la constraseña.
-		String verifyLogin = "SELECT count(1) FROM User WHERE username = '" + usernameFx.getText() + "' and password = '" 
+		String verifyLogin = "SELECT * FROM User WHERE username = '" + usernameFx.getText() + "' and password = '" 
 		+ passwordFx.getText() + "'";
-		
+
 		
 		try {
 			
@@ -112,19 +150,39 @@ public class ViewsLoginController implements Initializable{
 			// Nos permite ejecutar la consulta para obtener el resultado.
 			ResultSet queryResult = statement.executeQuery(verifyLogin);
 
-			while(queryResult.next()) {
+
+			// Si queryResult verifica que el resultado de la consulta es igual a 1 significa que a habido coincidencia
+			if (queryResult.next()) {
 				
-				// Si queryResult verifica que el resultado de la consulta es igual a 1 significa que a habido coincidencia
-				if (queryResult.getInt(1) == 1) {
-					
-					// Mostramos un mensaje de felicitacion si el inicio de sesión es válido.
-					loginMessage.setText("congratulations!");
-				} else {
-					
-					// Sino mostrara un mensaje de error si el inicio de sesion no es correcto.
-					loginMessage.setText("Invalid login. Please try again");
-				}
+				// Mostramos un mensaje de felicitacion si el inicio de sesión es válido.
+				loginMessage.setText("congratulations!");
+				
+				// Obtenemos el ID del usuario que inicio sesión 
+				longinUserId = queryResult.getInt("IdUser");
+				
+				// cerramos la ventana de inicio de sescion
+				Stage stage = (Stage) loginButton.getScene().getWindow();
+				stage.close();
+				
+				// Mostramos la ventana de la lista de ntas
+				FXMLLoader notesPadLoader = new FXMLLoader(getClass().getResource("/view/NotePadView.fxml"));
+				Parent notesPadRoot = notesPadLoader.load();
+				NotePadController notesPadController = notesPadLoader.getController();
+				
+				// Pasamos los datos necesario para poder saber que lista tenemos que ver
+				notesPadController.setLonginUserId(longinUserId);
+				
+				// Mostramos la ventana de la lista de notas
+				Stage notesPadStage = new Stage();
+				notesPadStage.setScene(new Scene(notesPadRoot));
+				notesPadStage.show();
+				
+			} else {
+				
+				// Sino mostrara un mensaje de error si el inicio de sesion no es correcto.
+				loginMessage.setText("Invalid login. Please try again");
 			}
+			
 			
 		} catch (Exception e) {
 			
@@ -150,18 +208,32 @@ public class ViewsLoginController implements Initializable{
 	public void createAccountForm() {
 		
 		try {
-			 Parent root = FXMLLoader.load(getClass().getResource("Register.fxml"));
-			 
-			 Stage registerStage = new Stage();
-			 
-			 registerStage.initStyle(StageStyle.UNDECORATED);
-			 registerStage.setScene(new Scene(root, 520, 580));
-			 registerStage.show();
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Register.fxml"));
+			
+			Parent root = loader.load();
+			
+			
+			RegisterController registerController = loader.getController();
+			registerController.setLonginUserId(longinUserId);
+			
+			Stage registerStage = new Stage();
+			registerStage.initStyle(StageStyle.UNDECORATED);
+			registerStage.setScene(new Scene(root, 520, 580));
+			registerStage.show();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
 	}
+
+
+	public void setRegisteredCredentials(String username, String password) {
+		registeredUsername = username;
+        registeredPassword = password;
+		
+	}
+	
+	
 	
 }
 
