@@ -7,22 +7,22 @@ package model;
  */
 public class User {
 	/**
-	 * 
+	 * Variable to store the user name.
 	 */
 	private String name;
 	
 	/**
-	 * 
+	 * Variable to store the username.
 	 */
 	private String username;
 	
 	/**
-	 * 
+	 * Variable to store the user password.
 	 */
 	private String pass;
 	
 	/**
-	 * 
+	 * Variable to store the user email.
 	 */
 	private String email;
 	
@@ -104,5 +104,4 @@ public class User {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
 }

@@ -1,5 +1,6 @@
-package application;
+package application; // Package name.
 
+// Imported packages
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -7,18 +8,43 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-public class Main extends Application {
+/**
+ * Main class that starts the JavaFX application called QuickNote.
+ * 
+ * @author Yarií Soto - Nasera Boulehoual.
+ * @version 0.1 May 31, 2023
+ * */
+
+public class Main extends Application { // Inherits from the Application class so it inherits the start method.
+	
+	/**
+	 * Method to start the application
+	 * 
+	 * @param primaryStage -  It is a main Stage object of the application.
+	 * @throws Exception - If any error occurs, it will throw an exception.
+	 * */
     @Override
     public void start(Stage primaryStage) throws Exception {
-        // Cargar el archivo fxml
+        
+    	// Load the Login view.
         Parent root = FXMLLoader.load(getClass().getResource("/view/Login.fxml"));
+        
+        // This allows us to remove the bar where the close button appears.
         primaryStage.initStyle(StageStyle.UNDECORATED);
+        
+        // It allows us to put the scene with a specific size.
         primaryStage.setScene(new Scene(root, 520, 400));
+        
+        // It allows us to show the scene, that is, the login.
         primaryStage.show();
     }
 
+    /**
+     * Main method to start the application
+     * 
+     * @param args - Are command line arguments.
+     * */
     public static void main(String[] args) {
         launch(args);
     }
 }
-

@@ -1,6 +1,6 @@
-package application; 
+package application; // Package name.
 
-// Paquetes importados
+//Imported packages
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -24,51 +24,72 @@ import java.sql.ResultSet;
 import java.util.ResourceBundle;
 import java.sql.Statement;
 
-
+/**
+ * Login View Controller.
+ * 
+ * @author Yarií Soto - Nasera Boulehoual.
+ * @version 0.1 May 31, 2023
+ * */
 public class ViewsLoginController implements Initializable{
 
-	// Variables que estan inicializadas en el FXML llamado Login.
+	// Variables that are initialized with the FXML Login file.
 	@FXML
-	private TextField usernameFx;
+	private TextField usernameFx; // Username.
 	
 	@FXML
-	private PasswordField passwordFx;
+	private PasswordField passwordFx; // User password.
 	
 	@FXML
-	private Button loginButton;
+	private Button loginButton; // Button to login.
 	
 	@FXML
-	private Button cancelButton;
+	private Button cancelButton; // Button to close the application.
 	
 	@FXML
-	private Button registerButton;
+	private Button registerButton; // Button to register.
 	
 	@FXML
-	private Label loginMessage;
+	private Label loginMessage; // Variable that displays a different error message.
+	
+	@FXML  
+	private ImageView imageLogo; // Logo image.
 	
 	@FXML 
-	private ImageView imageLogo;
+	private ImageView ImageIcon; // Icon image.
 	
-	@FXML 
-	private ImageView ImageIcon;
+	// Controller's own variables.
 	
-	private int longinUserId;
+	private int longinUserId; // User id.
 	
-	private String registeredUsername;
-	private String registeredPassword;;
+	private String registeredUsername; // Registered username.
+	
+	private String registeredPassword; // Password of the registered user.
 	
 	
-	// Metodo que cuando el usuario pulse en el boton de sign in el usuario podra ver la vista del registro para poder registarse.
+	/**
+	 * Method that is executed when the user presses the "Sign In" button. Shows the registration view so that the user can register.
+	 * 
+	 * @param event - It is an action event that opens the record
+	 * */
 	public void signInButtonOnActivion(ActionEvent event) {
-		createAccountForm();
+		createAccountForm(); // We call the createAccountForm method.
 	}
 	
-	
+	/**
+	 * Method that is executed when the user presses the "Login" button and It also performs login validation.
+	 * 
+	 * @param event - It is an event that initiates the session of the user to the application.
+	 * @throws IOException - If I get an error during execution, show this exception.
+	 * */
 	public void loginButtonOnActivion(ActionEvent event) throws IOException {
 		
+		// We store the username input in the "enterdUsername" variable.
 		String enterdUsername = usernameFx.getText();
+		
+		// We store the user's password input in the "enterdPassword" variable.
 		String enterdPassword = passwordFx.getText();
 		
+		// If the fields are empty, an error message will jump, otherwise it will call the "validateLogin()" method to validate if the input is correct.
 		if (usernameFx.getText().isBlank() == false && passwordFx.getText().isBlank() == false) {
 			validateLogin();
 		} else {
@@ -78,174 +99,176 @@ public class ViewsLoginController implements Initializable{
 		
 		try {
 		
-			// Miramos si los datos del usuario son los mismo que el de registro
+			// We check if the user data is the same as the registration.
 			if (enterdUsername.equals(registeredUsername) && enterdPassword.equals(registeredPassword)) {
-				// cerramos la ventana de inicio de sescion
+				
+				// We close the login window.
 				Stage stage = (Stage) loginButton.getScene().getWindow();
 				stage.close();
 				
-				// Mostramos la ventana de la lista de ntas
+				// We show the note list window.
 				FXMLLoader notesPadLoader = new FXMLLoader(getClass().getResource("/view/NotePadView.fxml"));
 				Parent notesPadRoot = notesPadLoader.load();
 				NotePadController notesPadController = notesPadLoader.getController();
 				
-				// Pasamos los datos necesario para poder saber que lista tenemos que ver
+				// We pass the necessary data to be able to know which list we have to see.
 				notesPadController.setLonginUserId(longinUserId);
 				
-				// Mostramos la ventana de la lista de notas
+				// We show the note list window
 				Stage notesPadStage = new Stage();
 				notesPadStage.setScene(new Scene(notesPadRoot));
 				notesPadStage.show();
 			}
 			
 		} catch (Exception e) {
+			// We handle the exception that may occur during execution.
 			e.printStackTrace();
 			e.getCause();
 		}
-		
 	}
 	
+	/**
+	 * This method is executed when the user clicks the "Cancel" button to close the login window.
+	 * 
+	 * @param event - This event closes the session window.
+	 * */
 	@FXML
 	public void cancelButtonOnAction(ActionEvent event) {
-		
-		// Cerramos el login
+	
 		Stage stage = (Stage) cancelButton.getScene().getWindow();
-		stage.close();
+		stage.close(); // We close the login
 	}
 
+	
+	/**
+	 * This method that runs the images when the application starts.
+	 * 
+	 * @param url - The URL of the location that you use to resolve the relative paths of the images.
+	 * @param arg1 - ResourceBundle is used to locate the objects.
+	 * */
 	@Override
 	public void initialize(URL url, ResourceBundle arg1) {
-		// Carga la image del logo atravez de la ruta donde se encuantra.
 		
+		// Load the logo image through the path where it is located.
 		File logoFile = new File("/home/nasera/git/Repository_YN/Project_QuickNote/Image/Captura desde 2023-05-26 06-21-34.png");
 		Image logoImage = new Image(logoFile.toURI().toString());
 		imageLogo.setImage(logoImage);
 		
-		// Carga la image del icono atravez de la ruta donde se encuantra.
-		
+		// Load the icon image through the path where it is located.
 		File iconFile = new File("/home/nasera/git/Repository_YN/Project_QuickNote/Image/Captura desde 2023-05-26 06-35-02.png");
 		Image iconImage = new Image(iconFile.toURI().toString());
 		ImageIcon.setImage(iconImage);
-		
 	}
 	
+	
+	/**
+	 * Method that validates the user's login.
+	 * */
 	public void validateLogin() {
 		
-		// Careamos una instancia de la clase DatabaseConnection.
+		// We create an instance of the "DatabaseConnection" class.
 		DatabaseConnection connectNow = new DatabaseConnection();
 		
-		// Obtenermos una conexión a la base de datos.
+		// We get the connection to the database.
 		Connection connectDB = connectNow.getConnection();
 		
-		// Esta consulta sql nos permite verificar el inicio de sesión utilizando el nombre del usuario y la constraseña.
+		// This sql query allows us to verify the login using the username and password.
 		String verifyLogin = "SELECT * FROM User WHERE username = '" + usernameFx.getText() + "' and password = '" 
 		+ passwordFx.getText() + "'";
 
 		
 		try {
 			
-			// Hemos creado una declaración para ejecutar la consulta.
+			// We have created a statement to execute the query.
 			Statement statement =  connectDB.createStatement();
 			
-			// Nos permite ejecutar la consulta para obtener el resultado.
+			// It allows us to execute the query to get the result.
 			ResultSet queryResult = statement.executeQuery(verifyLogin);
 
 
-			// Si queryResult verifica que el resultado de la consulta es igual a 1 significa que a habido coincidencia
 			if (queryResult.next()) {
-				
-				// Mostramos un mensaje de felicitacion si el inicio de sesión es válido.
-				loginMessage.setText("congratulations!");
-				
-				// Obtenemos el ID del usuario que inicio sesión 
+	
+				// Get the ID of the user who logged in
 				longinUserId = queryResult.getInt("IdUser");
 				
-				// cerramos la ventana de inicio de sescion
+				// We close the login window
 				Stage stage = (Stage) loginButton.getScene().getWindow();
 				stage.close();
 				
-				// Mostramos la ventana de la lista de ntas
+				// We show the note list window
 				FXMLLoader notesPadLoader = new FXMLLoader(getClass().getResource("/view/NotePadView.fxml"));
 				Parent notesPadRoot = notesPadLoader.load();
 				NotePadController notesPadController = notesPadLoader.getController();
 				
-				// Pasamos los datos necesario para poder saber que lista tenemos que ver
+				// We pass the necessary data to be able to know which list we have to see
 				notesPadController.setLonginUserId(longinUserId);
 				
-				// Mostramos la ventana de la lista de notas
+				// We show the note list window
 				Stage notesPadStage = new Stage();
 				notesPadStage.setScene(new Scene(notesPadRoot));
 				notesPadStage.show();
 				
 			} else {
-				
-				// Sino mostrara un mensaje de error si el inicio de sesion no es correcto.
+				// Otherwise it will show an error message if the login is not successful.
 				loginMessage.setText("Invalid login. Please try again");
 			}
 			
-			
 		} catch (Exception e) {
-			
-			// Manejamos la excepción que pueda ocurrir durante la ejecución.
-			e.printStackTrace();
+			e.printStackTrace(); // We handle the exception that may occur during execution.
 
 		} finally {
+			
 			try {
-				
-				// Cerranomos la sesion con la base de datos con el bloque finally
+				// We close the session with the database with the finally block
 				if (connectDB != null) {
 					connectDB.close();
 				}
 				
 			} catch (Exception e2) {
-				e2.printStackTrace();
+				e2.printStackTrace(); // We handle the exception that may occur during execution.
 			}
 		}
 	}
 	
-	
-	// Metodo que llama la vista de registro
+	/**
+	 * The method used to display the log view.
+	 * */
 	public void createAccountForm() {
 		
 		try {
+			
+			// Load the log view.
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Register.fxml"));
 			
+			// We get the object to load the view.
 			Parent root = loader.load();
 			
-			
+			// We get the view controller from the record.
 			RegisterController registerController = loader.getController();
+			
+			// We set the login user ID with the controller.
 			registerController.setLonginUserId(longinUserId);
 			
+			// We show the view window
 			Stage registerStage = new Stage();
 			registerStage.initStyle(StageStyle.UNDECORATED);
 			registerStage.setScene(new Scene(root, 520, 580));
-			registerStage.show();
+			registerStage.show(); // We handle the exception that may occur during execution.
 		} catch (Exception e) {
-			e.printStackTrace();
+			e.printStackTrace(); // We handle the exception that may occur during execution.
 		}
-		
 	}
 
-
+	/**
+	 * Method used to set registered credentials.
+	 * Assigns the provided username and password to the corresponding variables.
+	 *
+	 * @param username The registered username.
+	 * @param password The registered password.
+	 */
 	public void setRegisteredCredentials(String username, String password) {
 		registeredUsername = username;
         registeredPassword = password;
 		
 	}
-	
-	
-	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,6 +1,9 @@
 package model;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
+
 
 /**
  * 
@@ -9,10 +12,15 @@ import java.time.LocalDate;
  */
 public class Note {
 	/**
+	 * Variable to save the note id.
+	 */
+	private int idNote;
+	
+	/**
 	 * Variable to save the note date.
 	 */
 	private LocalDate noteDate;
-
+	
 	/**
 	 * Variable to save the note title.
 	 */
@@ -24,24 +32,41 @@ public class Note {
 	private String body;
 	
 	/**
+	 * Variable to save the userId
+	 */
+	private int idUser;
+	
+	/**
 	 * Note constructor.
 	 * @param title - The note title.
 	 * @param body - The note body.
 	 */
-	public Note(String title, String body) {
+	public Note(String title, String body, int idUser) {
 		super();
 		this.title = title;
 		this.body = body;
+		this.idUser=idUser;
 		noteDate=LocalDate.now();
 	}
-	
-	
-	public LocalDate getNoteDate() {
-		return noteDate;
-	}
 
-	public void setNoteDate(LocalDate noteDate) {
-		this.noteDate = noteDate;
+	/**
+	 * Second note constructor.
+	 */
+	/*public Note() {
+		super();
+		noteDate=LocalDate.now();
+	}*/
+	
+	/**
+	 * Third note constructor.
+	 */
+	public Note(int idNote, LocalDate noteDate, String title, String body) {
+		super();
+		this.idNote=idNote;
+		this.noteDate=noteDate;
+		this.title = title;
+		this.body = body;
+		
 	}
 	
 	/**
@@ -76,6 +101,21 @@ public class Note {
 		this.body = body;
 	}
 	
+	/** Note date getter.
+	 * @return - the note date.
+	 */
+	public LocalDate getNoteDate() {
+		return noteDate;
+	}
+	
+	/**
+	 * User id getter.
+	 * @return - user id.
+	 */
+	public int getIdUser() {
+		return idUser;
+	}
+
 	/**
 	 * Method to delete the note.
 	 */

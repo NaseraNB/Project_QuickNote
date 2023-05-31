@@ -1,216 +1,288 @@
 package application;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 import model.Note;
+import java.sql.Connection;
 
 import java.sql.*;
 import javax.sql.*;
+import javax.swing.*;
 
+/**
+ * NoteController class.
+ * @author Yarií Soto - Nasera Boulehoual
+ * @version 1.0, 24 May 2023
+ */
 public class NoteController implements Initializable{
-
 	//Variables from NoteView
-		@FXML
-		private Menu deleteNote;
+	@FXML
+	private Menu deleteNote;
+	
+	@FXML
+	private Button exitButton;
+	
+	@FXML
+	private ScrollPane scrollNote;
+	
+	@FXML
+	private TextArea titleNote;
+	
+	@FXML
+	private TextArea bodyText;
+	
+	@FXML
+	private Button saveOnlineB;
+	
+	@FXML
+	private Button saveLocalB;
+	
+	/**
+	 * A variable to store a create note.
+	 */
+	private Note note;
+	
+	/**
+	 * A variable to store an local file.
+	 */
+	private static boolean openFile;
+	
+	/**
+	 * ObservableList to store the note objects.
+	 */
+	//private static ObservableList<Note> notes;
+
+    /**
+     * Initializes the controller class.
+     */
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+    	
+    }
+    
+    /**
+     * Method to initialize openFile.
+     * @param f -a File.
+     */
+  /*  public static void initializeNote(Boolean f, ObservableList<Note> ns) {
+    	openFile=f;
+    	
+    	NotePadController.notes=ns;
+    	
+    }*/
+    
+    /**
+     * Method to initialize the notes ObservableList
+     * @param notes
+     */
+   /* public void initAttributtes(ObservableList<Note> notes) {
+        this.notes = notes;
+    }*/
+
+	
+	/**		
+	 * Method to scroll at note.
+	 * @param event
+	 */
+	public void scrollNoteController(ActionEvent event) {
+		//TODO 
+	}
+	
+	/**
+	 * Method to save the note online.
+	 * @param event - on click.; 
+	 */
+	@FXML
+	public void saveOnlineAction() {
+		//Create a new note object with users entry.
+		createNote();
+		//note = new Note(titleNote.getText(),bodyText.getText(),1);
 		
-		@FXML
-		private Menu exitNote;
-		
-		@FXML
-		private ScrollPane scrollNote;
-		
-		@FXML
-		private TextField titleNote;
-		
-		@FXML
-		private TextArea bodyText;
-		
-		@FXML
-		private Button saveOnlineB;
-		
-		@FXML
-		private Button saveLocalB;
-		
-		private Note note;
-		
-		private NotePadController NotePadController;
-
-		/**
-		 * 
-		 */
-	    //private ObservableList<Note> notes;
-
-	    /**
-	     * Initializes the controller class.
-	     */
-	    @Override
-	    public void initialize(URL url, ResourceBundle rb) {
-
-	    }
-	    
-	    /**
-	     * Method to initialize the notes ObservableList
-	     * @param notes
-	     */
-	   /* public void initAttributtes(ObservableList<Note> notes) {
-	        this.notes = notes;
-	    }*/
-
-		
-		/**
-		 * Method to delete a note.
-		 * @param event
-		 */
-		public void deleteNote(ActionEvent event) {
-			//TODO 
-		}
-		
-		/**
-		 * Method to set the title note.
-		 * @param event
-		 */
-		public void setTitleNoteController(ActionEvent event) {
-			//TODO 
-		}
-		
-		/**
-		 * Method to set the body note.
-		 * @param event - 
-		 */
-		public void setBodyNoteController(ActionEvent event) {
-			//TODO 
-		}
-		
-		/**		
-		 * Method to scroll at note.
-		 * @param event
-		 */
-		public void scrollNoteController(ActionEvent event) {
-			//TODO 
-		}
-		
-		public Menu getDeleteNote() {
-			return deleteNote;
-		}
-
-		public void setDeleteNote(Menu deleteNote) {
-			this.deleteNote = deleteNote;
-		}
-
-		public Menu getExitNote() {
-			return exitNote;
-		}
-
-		public void setExitNote(Menu exitNote) {
-			this.exitNote = exitNote;
-		}
-
-		public ScrollPane getScrollNote() {
-			return scrollNote;
-		}
-
-		public void setScrollNote(ScrollPane scrollNote) {
-			this.scrollNote = scrollNote;
-		}
-
-		public TextField getTitleNote() {
-			return titleNote;
-		}
-
-		public void setTitleNote(TextField titleNote) {
-			this.titleNote = titleNote;
-		}
-
-		public TextArea getBodyText() {
-			return bodyText;
-		}
-
-		public void setBodyText(TextArea bodyText) {
-			this.bodyText = bodyText;
-		}
-
-
-		public Button getSaveLocalB() {
-			return saveLocalB;
-		}
-
-		public void setSaveLocalB(Button saveLocalB) {
-			this.saveLocalB = saveLocalB;
-		}
-
-		public void setNote(Note note) {
-			this.note = note;
-		}
-
-		/**
-		 * Method to save the note online.
-		 * @param event - on click.
-		 */
-		public void saveOnline(ActionEvent event) {
-			//TODO comprovar que sean correctos los datos.
-			//Create a new note object with users entry.
-			note = new Note(titleNote.getText(),bodyText.getText());
+		//Connection to data base.	
+		try {
+			Connection notesConnection = DriverManager.getConnection("jdbc:mysql://sql8.freesqldatabase.com:3306/sql8622418","sql8622418","ckypqL8v3e");
 			
-			//Store at data base.
-			//Connection to data base.	
-			try {
-				Connection notesConnection = DriverManager.getConnection("jdbc:mysql://sql8.freesqldatabase.com:3306/sql8620870","sql8620870","Br7vTpCslf");
-				Statement newS = notesConnection.createStatement();
+			//Statement newS = notesConnection.createStatement();
+			
+			//TODO que se ponga la id de usuario.
+			String title = note.getTitle();
+			Date date = Date.valueOf(note.getNoteDate());
+			String body = note.getBody();
+			int userId= note.getIdUser();
+			
+            
+			String sql = "insert into Note(noteDate,title,body,idUser) values('" + date + "','" + title + "','" + body + "','" + userId + "')";
+           
+			// Hacemos la consexion para añadir el nuevo registro a usuario.
+			Statement statement = notesConnection.createStatement();
+			statement.executeUpdate(sql);
+						
+			/*PreparedStatement ps = notesConnection.prepareStatement(sql);
+            
+            ps.setString(1,note.getTitle());
+            ps.setDate(2,Date.valueOf(note.getNoteDate()));
+            ps.setString(3,note.getBody());
+            ps.setInt(4,note.getIdUser());
+            
+            ps.executeUpdate();*/
+            
+            //Confirm creation.
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText(null);
+            alert.setTitle("Informació");
+            alert.setContentText("S'ha creat la nota correctament.");
+            alert.showAndWait();
+            
+		} catch (SQLException e) {
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+		    alert.setHeaderText(null);
+		    alert.setTitle("Error");
+		    alert.setContentText("No s'ha pogut connectar amb la base de dades.");
+		    alert.showAndWait();
+		}
+		
+		openNotePadWindows();
+	}
+	
+	/**
+	 * Method to save the note at local drive.
+	 * @param event
+	 */
+	@FXML
+	private void saveLocal() {
+		
+		Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setHeaderText(null);
+        alert.setTitle("Informació");
+        alert.setContentText("Funciona");
+        alert.showAndWait();
+		
+        //Create a note with user entry.
+        createNote();
+      		
+		//Save as if the file exists on the disk.
+		if(!openFile) {
+			//Create a file selector
+			JFileChooser saveFile=new JFileChooser();
+			
+			//Save the user choose.
+			int opc = saveFile.showSaveDialog(null);
+			
+			//Check user option
+			if(opc == JFileChooser.APPROVE_OPTION) {
 				
-				//TODO que solo salgan las notas que queremos, con un WHERE idUser = a user logeado.
-				ResultSet result = newS.executeQuery("INSERT INTO Note (noteDate,title,body)");
+				File userFile = saveFile.getSelectedFile();
 				
-			} catch (SQLException e) {
-				e.printStackTrace();
+				try {
+					//Create the FileWriter.
+					FileWriter fw = new FileWriter(userFile.getPath());
+					
+					//Get the text user note.
+					String text = note.getTitle()+"\n"+note.getBody();
+					
+					//A loop to white at the file.
+					for(int i=0; i<text.length();i++) {
+						fw.write(text.charAt(i));
+					}
+					
+					//Close the FileWrite.
+					fw.close();
+					
+				} catch (IOException e) {
+					Alert alertError = new Alert(Alert.AlertType.ERROR);
+					alertError.setHeaderText(null);
+					alertError.setTitle("Error");
+					alertError.setContentText("No s'ha trobat la ruta.");
+					alertError.showAndWait();
+				}
+				openNotePadWindows();
 			}
+		}
+	}
+	
+	
+	
+	/**
+	 * Method to create a note.
+	 */
+	private void createNote() {
+		//TODO no funciona y crea la nota igual, aunque no tenga título
+		if(titleNote.getText()!=null) {
+			//Create a new note object with users entry
 			
-			//Return to NotePad view.
-			   
+			//TODO coger id udsuario
+	      	note = new Note(titleNote.getText(),bodyText.getText(),1);
+	      	
+		}else {
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+		    alert.setHeaderText(null);
+		    alert.setTitle("Error");
+		    alert.setContentText("No has introduït un títol.");
+		    alert.showAndWait();
 		}
-		
-		/**
-		 * Method to save the note at local drive.
-		 * @param event
-		 */
-		public void saveLocal(ActionEvent event) {
-			//TODO 
+	}
+	
+	
+	/**
+	 * Method to exit the note.
+	 */
+	@FXML
+	public void closeWindows() {
+		openNotePadWindows();
+	}
+	
+	/**
+	 * Method to change to NotePadWindows.
+	 */
+	private void openNotePadWindows() {
+		try {
+			FXMLLoader loader = new FXMLLoader();
+			
+			loader.setLocation(Main.class.getResource("/view/NotePadView.fxml"));
+			
+			Parent windows = loader.load();
+			
+			//NoteController controller = loader.getController();
+			
+			Scene scene = new Scene(windows);
+			Stage stage = new Stage();
+			
+			stage.setScene(scene);
+			stage.show();
+			
+			Stage myStage = (Stage) this.exitButton.getScene().getWindow();
+			myStage.close();
+			
+		} catch (IOException e) {
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+		    alert.setHeaderText(null);
+		    alert.setTitle("Error");
+		    alert.setContentText("No s'ha trobat la vista.");
+		    alert.showAndWait();
 		}
-		
-		
-		/**
-		 * Method to exit the note.
-		 * @param event
-		 */
-		@FXML
-		public void closeWindows() {
-			/*Stage stage = (Stage) exitNote.getScene().getWindow();
-			stage.close();*/
-		}
-		
-		/**
-		 * Method to get the new note.
-		 * @return - a note.
-		 */
-		public Note getNote() {
-	        return note;
-	    }
-
-		public NotePadController getNotePadController() {
-			return NotePadController;
-		}
-
-		public void setNotePadController(NotePadController notePadController) {
-			NotePadController = notePadController;
-		}
-		
+	}
 }

@@ -1,12 +1,15 @@
 package application;
 
+import java.sql.*;
+import javax.sql.*;
+import javax.swing.*;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
@@ -17,22 +20,21 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ResourceBundle;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+
 import model.Note;
 
 /**
- * 
- * @author Yarií Soto - Nasera 
- *
+ * NotePadController class.
+ * @author Yarií Soto - Nasera Boulehoual
+ * @version 1.0, 24 May 2023
  */
 public class NotePadController implements Initializable{
 	
@@ -53,7 +55,7 @@ public class NotePadController implements Initializable{
 	private Menu deleteNote;
 	
 	@FXML
-	private Menu exitNotePad;
+	private Button exitButton;
 	
 	@FXML
 	private ScrollBar scrollNotes;
@@ -62,65 +64,106 @@ public class NotePadController implements Initializable{
 	private ListView<String> notesListView;
 	
 	/**
+	 * A variable to store an local file. -- TODO HA DE SER FILE, pero para pruevas és String.
+	 */
+	static boolean openFile=false;
+	
+	/**
 	 * ObservableList to store the note objects.
 	 */
-	private ObservableList<Note> notes;
+	static ObservableList<Note> notes = FXCollections.observableArrayList();
 	
 	/**
 	 * ObservableList to store the notes title.
 	 */
-	private ObservableList<String> arrayListTitles = FXCollections.observableArrayList();;
+	private ObservableList<String> arrayListTitles = FXCollections.observableArrayList();
 	
-	private int longinUserId = 0;
+	
+	/**
+	 * Variable to store the current note selection.
+	 */
+	private String currentNote;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		notes = FXCollections.observableArrayList();
 		
-		// Obtener las notas de usuario desde la base de datos
+		//TESTS
+		/*notes.add(new Note("Nota","Soy una nota.",1));
+		notes.add(new Note("Nota2","Soy una nota 2.",2));
+		notes.add(new Note("Nota 3","Soy una nota 3.",3));*/
+		
+		
+		
+		//Connection to data base.	
 		try {
-			fetchUserNotes();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		for (Note note : notes) {
-			arrayListTitles.add(note.getTitle());
-		} 
-		
-		notesListView.setItems(arrayListTitles);
-		notesListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-		
-	
-	}
-	
-	// Metodo para obtener las notas creadas del usuario desde la base de datos.
-	private void fetchUserNotes() throws IOException{
-		try {
+			Connection notesConnection = DriverManager.getConnection("jdbc:mysql://sql8.freesqldatabase.com:3306/sql8622418","sql8622418","ckypqL8v3e");
 			
-			Connection connectionDB = DriverManager.getConnection("jdbc:mysql://sql8.freesqldatabase.com:3306/sql8620870","sql8620870","Br7vTpCslf");
-			Statement noteStatement = connectionDB.createStatement();
+			//TODO comprovar el id de usuario.
 			
-			ResultSet resultSet = noteStatement.executeQuery("SELECT title, body FROM Note WHERE IdUser = " + longinUserId);
-			
-			while (resultSet.next()) {
-				String title = resultSet.getString("title");
-				String body = resultSet.getString("body");
-				notes.add(new Note(title, body));
+			/*
+			Date date = Date.valueOf(note.getNoteDate());
+			String title = note.getTitle();
+			String body = note.getBody();
+			int userId= note.getIdUser();*/
+		
+			Statement statement = notesConnection.createStatement();
+			ResultSet sql = statement.executeQuery("SELECT * FROM Note");
+           
+			//Get the notes title.
+			while(sql.next()) {
+				arrayListTitles.add(sql.getString(3));
 			}
 			
-		} catch (Exception e) {
-			e.printStackTrace();
+			//Get the notes.
+			while(sql.next()) {
+				notes.add(new Note(sql.getInt(1),sql.getDate(2).toLocalDate(),sql.getString(3),sql.getString(4)));
+			}
+            
+            //Confirm creation. TESTS
+           /* Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText(null);
+            alert.setTitle("Informació");
+            alert.setContentText("S'ha creat la connexió");
+            alert.showAndWait();*/
+            
+		} catch (SQLException e) {
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+		    alert.setHeaderText(null);
+		    alert.setTitle("Error");
+		    alert.setContentText("No s'ha pogut connectar amb la base de dades.");
+		    alert.showAndWait();
 		}
+		
+		//Set the notes title at notesListView.
+		notesListView.setItems(arrayListTitles);
+		
+		//
+		notesListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+		
+		//Select an item.
+		notesListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> arg0, String arg1, String arg2) {
+				
+				currentNote = notesListView.getSelectionModel().getSelectedItem();
+			}	
+		});
 	}
-	
 	
 	/**
 	 * Method to open an external note.
 	 * @param event
 	 */
-	public void OpenExtNote(ActionEvent event) {
-		//
+	private void OpenExtNote() {
+		//TODO Se ha de codificar
+		
+		//Create a file selector
+		//JFileChooser fileSelector=new JFileChooser();
+		
+		//Indicate what type of file the user can see
+		//fileSelector.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		
 		/*File logoFile = new File();
 		Image logoImage = new Image(logoFile.toURI().toString());
@@ -131,6 +174,7 @@ public class NotePadController implements Initializable{
 		/*File iconFile = new File("/home/nasera/git/Repository_YN/Project_QuickNote/Image/Captura desde 2023-05-26 06-35-02.png");
 		Image iconImage = new Image(iconFile.toURI().toString());
 		ImageIcon.setImage(iconImage);*/
+		//NoteController.initializeOpenFile(openFile);
 	}
 	
 	/**
@@ -139,41 +183,38 @@ public class NotePadController implements Initializable{
 	 */
 	@FXML
 	private void newNoteAction(ActionEvent event) {
-		openNoteWindows(null);
-	}
-	
-	/**
-	 * Method to open a note editor.
-	 * @param event - on click.
-	 */
-	@FXML
-	private void editNoteAction(ActionEvent event) {
-		int selectedIndex = notesListView.getSelectionModel().getSelectedIndex();
-		
-		if (selectedIndex >= 0) {
-			Note selectedNote = notes.get(selectedIndex);
-			openNoteWindows(selectedNote);
-		}
+		//NoteController.initializeOpenFile(openFile);
+		openNoteWindows();
 	}
 	
 	/**
 	 * Method to open the note windows.
 	 */
-	public void openNoteWindows(Note note) {
+	private void openNoteWindows() {
 		try {
 			FXMLLoader loader = new FXMLLoader();
+			
 			loader.setLocation(Main.class.getResource("/view/NoteView.fxml"));
+			
 			Parent windows = loader.load();
-			NoteController noteController = loader.getController();
-			noteController.setNote(note);
-			noteController.setNotePadController(this);
+			
 			Scene scene = new Scene(windows);
+			
 			Stage stage = new Stage();
+			
 			stage.setScene(scene);
+			
 			stage.show();
 			
+			Stage myStage = (Stage) this.exitButton.getScene().getWindow();
+			myStage.close();
+			
 		} catch (IOException e) {
-			e.printStackTrace();
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+		    alert.setHeaderText(null);
+		    alert.setTitle("Error");
+		    alert.setContentText("No s'ha trobat la vista.");
+		    alert.showAndWait();
 		}
 	}
 	
@@ -182,102 +223,45 @@ public class NotePadController implements Initializable{
 	 * Method to delete a note.
 	 * @param event
 	 */
-	public void deleteNote(ActionEvent event) {
-		int selectedIndex = notesListView.getSelectionModel().getSelectedIndex();
-		
-		if(selectedIndex >= 0) {
-			notes.remove(selectedIndex);
-			arrayListTitles.remove(selectedIndex);
-			
-			
-			// Eliminiamos la nota de la base de datos.
-			Note selectedNote = notes.get(selectedIndex);
-			openNoteWindows(selectedNote);
-			
-		}
-	}
-	
-	
-	/**
-	 * Method to close the NotePad.
-	 * @param event - on click.
-	 */
-	@FXML
-	private void exitNotePad(ActionEvent event) {
-		Node source = (Node) event.getSource();
-	    Stage stage = (Stage) source.getScene().getWindow();
-	    stage.close();
-	}
-	
-	
-	public void saveNote(Note note) {
-		
-		if (note != null) {
-			if(notes.contains(note)) {
-				// Actualizamos la nota existente en la base de datos.
-				updateNoteInDB(note);
-			} else {
-				notes.add(note);
-				
-				arrayListTitles.add(note.getTitle());
-				
-				// Insertamos la nueva nota en la base de datos
-				insertNoteDB(note);
-			}
-		}
-	}
-	
-	
-	private void insertNoteDB(Note note) {
-		
+	private void deleteNote() {
 		try {
+			Connection notesConnection = DriverManager.getConnection("jdbc:mysql://sql8.freesqldatabase.com:3306/sql8622418","sql8622418","ckypqL8v3e");
 			
-			Connection connectionDB = DriverManager.getConnection("jdbc:mysql://sql8.freesqldatabase.com:3306/sql8620870","sql8620870","Br7vTpCslf");
-			Statement statement = connectionDB.createStatement();
-			String query = "INSERT INTO Note (title, body, IdUser) VALUES ('" + note.getTitle() + "', '" + note.getBody() + "', " + longinUserId + ")";
-			statement.executeUpdate(query);
+			//Statement newS = notesConnection.createStatement();
 			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-	}
-	
-	
-	private void updateNoteInDB(Note note) {
-		
-		try {	
-			Connection connectionDB = DriverManager.getConnection("jdbc:mysql://sql8.freesqldatabase.com:3306/sql8620870","sql8620870","Br7vTpCslf");
-			Statement statement = connectionDB.createStatement();
-			String query = "UPDATE Note SET title = '" + note.getTitle() + "', body = '" + note.getBody() + "' WHERE IdUser = " + longinUserId + " AND title = '" + note.getTitle() + "'";
-			statement.executeUpdate(query);
+			/*//TODO que se ponga la id de usuario.
+			String title = note.getTitle();
+			Date date = Date.valueOf(note.getNoteDate());
+			String body = note.getBody();
+			int userId= note.getIdUser();*/
 			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-	}
-	
-	
-	
-	private void deleteNoteFromDatabase(Note note) {
-		int selectedIndex = notesListView.getSelectionModel().getSelectedIndex();
+            
+			String sql = "DELETE FROM Note WHERE";
+           
+			// Hacemos la consexion para añadir el nuevo registro a usuario.
+			Statement statement = notesConnection.createStatement();
+			statement.executeUpdate(sql);
 
-		if (selectedIndex >= 0) {
-			Note selectedNote = notes.get(selectedIndex);
-			
-			try {	
-				Connection connectionDB = DriverManager.getConnection("jdbc:mysql://sql8.freesqldatabase.com:3306/sql8620870","sql8620870","Br7vTpCslf");
-				Statement statement = connectionDB.createStatement();
-				String query = "DELETE FROM Note WHERE IdUser = " + longinUserId + " AND title = '" + selectedNote.getTitle() + "'";
-				statement.executeUpdate(query);
+            
+            //Confirm creation.
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText(null);
+            alert.setTitle("Informació");
+            alert.setContentText("S'ha creat la nota correctament.");
+            alert.showAndWait();
+            
+		} catch (SQLException e) {
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+		    alert.setHeaderText(null);
+		    alert.setTitle("Error");
+		    alert.setContentText("No s'ha pogut connectar amb la base de dades.");
+		    alert.showAndWait();
+		}
 				
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
+		
 	}
-
+	
+	
 	/**
 	 * Method to scroll at notes windows.
 	 * @param event - 
@@ -287,11 +271,27 @@ public class NotePadController implements Initializable{
 	}*/
 	
 	
-	public int getLonginUserId() {
-		return longinUserId;
+	@FXML
+	private void editNoteAction() {
+		
+	}
+	
+	/**
+	 * Method to close the NotePad.
+	 * @param event - on click.
+	 */
+	@FXML
+	private void exitNotePad() {
+		/*Node source = (Node) event.getSource();
+	    Stage stage = (Stage) source.getScene().getWindow();
+	    stage.close();*/
+	     Stage stage = (Stage) this.exitButton.getScene().getWindow();
+	     stage.close();
 	}
 
 	public void setLonginUserId(int longinUserId) {
-		this.longinUserId = longinUserId;
+		// TODO Auto-generated method stub
+		
 	}
+
 }
